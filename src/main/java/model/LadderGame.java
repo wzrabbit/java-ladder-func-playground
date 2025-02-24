@@ -1,6 +1,8 @@
 package model;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class LadderGame {
     private final Ladder ladder;
@@ -17,7 +19,7 @@ public class LadderGame {
         this.ladderConnections = ladder.getConnections();
     }
 
-    String getPlayerResult(PlayerName playerName) {
+    public String getPlayerPrize(PlayerName playerName) {
         int playerIndex = playerNames.getNames().indexOf(playerName.getName());
 
         if (playerIndex == -1) {
@@ -25,5 +27,16 @@ public class LadderGame {
         }
 
         return prizeNames.get(ladderConnections.get(playerIndex));
+    }
+
+    public List<LadderGamePlayerResult> getAllPlayersResult() {
+        return playerNames
+                .getNames()
+                .stream()
+                .map(playerName -> {
+                    String prizeName = getPlayerPrize(new PlayerName(playerName));
+                    return new LadderGamePlayerResult(new PlayerName(playerName), new PrizeName(prizeName));
+                })
+                .collect(Collectors.toList());
     }
 }
